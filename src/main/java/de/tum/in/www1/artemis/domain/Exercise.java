@@ -68,7 +68,7 @@ public abstract class Exercise implements Serializable {
     private ZonedDateTime assessmentDueDate;
 
     @Column(name = "max_score")
-    private Double maxScore;
+    private double maxScore;
 
     @Column(name = "problem_statement")
     @Lob

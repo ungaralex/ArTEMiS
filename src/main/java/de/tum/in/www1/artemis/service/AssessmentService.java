@@ -13,9 +13,9 @@ abstract class AssessmentService {
     this.resultRepository = resultRepository;
   }
 
-  Result submitResult(Result result, Exercise exercise, Double calculatedScore) {
-    Double maxScore = exercise.getMaxScore();
-    result.setRatedIfNotExceeded(exercise.getDueDate(),result.getSubmission().getSubmissionDate());
+  Result submitResult(Result result, Exercise exercise, double calculatedScore) {
+    double maxScore = exercise.getMaxScore();
+    result.setRatedIfNotExceeded(exercise.getDueDate(), result.getSubmission().getSubmissionDate());
     result.setCompletionDate(ZonedDateTime.now());
     double totalScore = calculateTotalScore(calculatedScore, maxScore);
     result.setScore(totalScore, maxScore);

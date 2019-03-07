@@ -12,6 +12,8 @@ export type EntityResponseType = HttpResponse<Result>;
 
 @Injectable({providedIn: 'root'})
 export class ModelingAssessmentService {
+    // TODO: cleanup: remove observe for responses -> return body as JSON instead of HttpResponse
+
     private resourceUrl = SERVER_API_URL + 'api/';
 
     constructor(private http: HttpClient) {
@@ -42,11 +44,12 @@ export class ModelingAssessmentService {
     }
 
     getDataForEditor(exerciseId: number, submissionId: number): Observable<HttpResponse<ModelingSubmission>> {
+        // TODO: does this request even work? shouldn't we use ${this.resourceUrl} instead of 'api' as start of URL? check content of this.resourceUrl
         return this.http.get<ModelingSubmission>(`api/assessment-editor/${exerciseId}/${submissionId}`, {observe: 'response'});
     }
 
-    resetOptimality(exerciseId: number): Observable<HttpResponse<void>> {
-        return this.http.delete<void>(`${this.resourceUrl}/exercises/${exerciseId}/optimal-model-submissions`, {observe: 'response'});
+    resetOptimality(exerciseId: number): Observable<void> {
+        return this.http.delete<void>(`${this.resourceUrl}/exercises/${exerciseId}/optimal-model-submissions`);
     }
 
     private convertResponse(res: EntityResponseType): EntityResponseType {

@@ -33,6 +33,7 @@ import java.util.Optional;
 import static de.tum.in.www1.artemis.web.rest.util.ResponseUtil.forbidden;
 import static de.tum.in.www1.artemis.web.rest.util.ResponseUtil.notFound;
 
+// TODO: refactor this class
 /**
  * REST controller for managing ModelingExercise.
  */
@@ -212,7 +213,7 @@ public class ModelingExerciseResource {
     public ResponseEntity<ModelingExercise> getProgrammingExercise(@PathVariable Long id) {
         log.debug("REST request to get ModelingExercise : {}", id);
         Optional<ModelingExercise> modelingExercise = modelingExerciseRepository.findById(id);
-        if (modelingExercise.isPresent()) {
+        if (modelingExercise.isPresent()) { // TODO: extract duplicated code?
             Course course = modelingExercise.get().getCourse();
             User user = userService.getUserWithGroupsAndAuthorities();
             if (!authCheckService.isTeachingAssistantInCourse(course, user) &&
@@ -255,7 +256,9 @@ public class ModelingExerciseResource {
     @GetMapping("/modeling-editor/{participationId}")
     @PreAuthorize("hasAnyRole('USER', 'TA', 'INSTRUCTOR', 'ADMIN')")
     @Transactional(readOnly = true)
+    // TODO: use / move to ModelingSubmissionResource + merge with next method?
     public ResponseEntity<ModelingSubmission> getDataForModelingEditor(@PathVariable Long participationId) {
+        // TODO: this method is too complicated -> simplify!
         Participation participation = participationService.findOneWithEagerSubmissions(participationId);
         if (participation == null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "participationNotFound", "No participation was found for the given ID.")).body(null);
@@ -317,8 +320,10 @@ public class ModelingExerciseResource {
     @Transactional
     //TODO: fix the REST URL
     //TODO MJ Move into ModelingassessmentResource ??
+    // TODO: use / move to ModelingSubmissionResource + merge with previous method?
     public ResponseEntity<ModelingSubmission> getDataForAssessmentEditor(@PathVariable Long exerciseId, @PathVariable Long submissionId) {
-        Optional<ModelingExercise> modelingExercise = modelingExerciseRepository.findById(exerciseId);
+        // TODO: this method is too complicated -> simplify! + most of this could be done in the service instead of the resource
+        Optional<ModelingExercise> modelingExercise = modelingExerciseRepository.findById(exerciseId); // TODO: use service instead of repository here
         if (!modelingExercise.isPresent()) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("modelingExercise", "exerciseNotFound", "No exercise was found for the given ID.")).body(null);
         }
@@ -342,8 +347,8 @@ public class ModelingExerciseResource {
             result.setSubmission(modelingSubmission);
             modelingSubmission.setResult(result);
             modelingSubmission.getParticipation().addResult(result);
-            result = resultRepository.save(result);
-            modelingSubmission = modelingSubmissionRepository.save(modelingSubmission);
+            result = resultRepository.save(result); // TODO: extract / combine with following line / whole if statement?
+            modelingSubmission = modelingSubmissionRepository.save(modelingSubmission); // TODO: extract / combine with previous line / whole if statement?
         }
 
         if (result.getAssessor() == null) {

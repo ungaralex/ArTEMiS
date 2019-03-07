@@ -26,6 +26,7 @@ import static de.tum.in.www1.artemis.web.rest.util.ResponseUtil.notFound;
 
 /**
  * REST controller for managing ModelingAssessment.
+ * TODO CZ: add documentation for methods (add comment to refactoring commits/PR from MJ?)
  */
 @RestController
 @RequestMapping("/api")
@@ -88,7 +89,7 @@ public class ModelingAssessmentResource extends AssessmentResource {
         return ResponseEntity.ok(response.toString());
     }
 
-    @GetMapping("submissions/{submissionId}/partial-assessment")
+    @GetMapping("submissions/{submissionId}/partial-assessment") // TODO CZ: change URL back to contain exerciseId again for consistency and to retrieve the exercise more easily?
     @PreAuthorize("hasAnyRole('TA', 'INSTRUCTOR', 'ADMIN')")
     public ResponseEntity<Result> getPartialAssessment(@PathVariable Long submissionId) {
         ModelingSubmission submission = modelingSubmissionService.findOne(submissionId);
@@ -100,7 +101,7 @@ public class ModelingAssessmentResource extends AssessmentResource {
             submission.setResult((Result) Hibernate.unproxy(submission.getResult()));
         }
         List<Feedback> partialFeedbackAssessment = compassService.getPartialAssessment(participation.getExercise().getId(), submissionId);
-        Result result = submission.getResult();
+        Result result = submission.getResult(); // TODO CZ: Result of a submission can be null -> check for null? make Result optional?
         result.setFeedbacks(partialFeedbackAssessment);
         return ResponseEntity.ok(result);
     }
@@ -118,7 +119,7 @@ public class ModelingAssessmentResource extends AssessmentResource {
             submission.setResult((Result) Hibernate.unproxy(submission.getResult()));
         }
         Result result = submission.getResult();
-        if (result != null) {
+        if (result != null) { // TODO CZ: make result optional to make the service API more explicit?
             return ResponseEntity.ok(result);
         } else {
             return notFound();
@@ -149,14 +150,16 @@ public class ModelingAssessmentResource extends AssessmentResource {
         long exerciseId = submission.getParticipation().getExercise().getId();
         ModelingExercise modelingExercise = modelingExerciseService.findOne(exerciseId);
         checkAuthorization(modelingExercise);
-        modelingAssessmentService.saveManualAssessment(result);
+        modelingAssessmentService.saveManualAssessment(result); // TODO CZ: shouldn't we update the modelingSubmission with the new result?
         if (submit) {
             List<Conflict> conflicts =
                 compassService.getConflicts(exerciseId, submissionId, result.getFeedbacks());
             if (!conflicts.isEmpty() && !ignoreConflict) {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body(conflicts);
             } else {
-                modelingAssessmentService.submitManualAssessment(result, modelingExercise);
+                // TODO CZ: use AssessmentService#submitResult() function instead
+                modelingAssessmentService.submitManualAssessment(result, modelingExercise); // TODO CZ: shouldn't we update the modelingSubmission with the new result?
+                // TODO CZ: what about the line below?
 //                compassService.addAssessment(exerciseId, submissionId, modelingAssessment);
             }
         }
