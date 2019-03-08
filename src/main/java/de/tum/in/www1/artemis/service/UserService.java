@@ -355,6 +355,7 @@ public class UserService {
         return user;
     }
 
+    // TODO: replace by getUserWithGroupsAndAuthorities as it's exactly the same
     @Transactional(readOnly = true)
     public User getUserWithAuthorities() {
         User user = userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin().get()).get();
