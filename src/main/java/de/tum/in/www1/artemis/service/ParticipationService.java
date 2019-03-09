@@ -87,6 +87,7 @@ public class ParticipationService {
         return participationRepository.saveAndFlush(participation);
     }
 
+    // TODO: documentation not correct. this method is also called for modeling exercises.
     /**
      * This method should only be invoked for programming exercises, not for other exercises
      *

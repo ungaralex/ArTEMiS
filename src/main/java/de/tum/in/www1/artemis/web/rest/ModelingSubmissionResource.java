@@ -124,7 +124,7 @@ public class ModelingSubmissionResource {
     public ResponseEntity<ModelingSubmission> updateModelingSubmission(@PathVariable Long courseId, @PathVariable Long exerciseId, Principal principal, @RequestBody ModelingSubmission modelingSubmission) {
         log.debug("REST request to update ModelingSubmission : {}", modelingSubmission.getModel());
         if (modelingSubmission.getId() == null) {
-            return createModelingSubmission(courseId, exerciseId, principal, modelingSubmission);
+            return createModelingSubmission(courseId, exerciseId, principal, modelingSubmission); // TODO: does this call make sense? createModellingSubmission also just calls handleModelingSubmission
         }
 
         return handleModelingSubmission(exerciseId, principal, modelingSubmission);
