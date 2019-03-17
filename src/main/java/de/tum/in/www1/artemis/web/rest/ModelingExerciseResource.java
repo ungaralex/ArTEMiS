@@ -304,6 +304,7 @@ public class ModelingExerciseResource {
         if (modelingSubmission.getResult() instanceof HibernateProxy) {
             modelingSubmission.setResult((Result) Hibernate.unproxy(modelingSubmission.getResult()));
         }
+        // TODO CZ: also load Feedback list of result before returning the submission?
         return ResponseEntity.ok(modelingSubmission);
     }
 

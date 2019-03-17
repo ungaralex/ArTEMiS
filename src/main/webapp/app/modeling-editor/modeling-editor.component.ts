@@ -31,7 +31,7 @@ export class ModelingEditorComponent implements OnInit, OnDestroy, ComponentCanD
     private subscription: Subscription;
     participation: Participation;
     modelingExercise: ModelingExercise;
-    result: Result;
+    result: Result; // TODO CZ: merge with 'assessmentResult'
 
     apollonEditor: ApollonEditor | null = null;
     selectedEntities: string[];
@@ -46,7 +46,7 @@ export class ModelingEditorComponent implements OnInit, OnDestroy, ComponentCanD
     submissionState: State;
 
     //TODO: rename
-    assessmentResult: Result;
+    assessmentResult: Result; // TODO CZ: merge with 'result'
     assessmentsNames: Map<string, Map<string, string>>;
     totalScore: number;
 
