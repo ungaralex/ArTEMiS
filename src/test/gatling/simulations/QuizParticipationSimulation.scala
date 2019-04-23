@@ -26,11 +26,11 @@ class QuizParticipationSimulation extends Simulation {
         "password" -> ("<PASSWORD>")    // NOTE: generate real password for each value of i (removed for security)
     ))
 
-    val baseURL = "http://localhost:8080"
+    val baseUrl = "http://localhost:8080"
     val wsBaseURL = "ws://localhost:8080"
 
     val httpConf: HttpProtocolBuilder = http
-        .baseURL(baseURL)
+        .baseUrl(baseUrl)
         .wsBaseURL(wsBaseURL)
         .inferHtmlResources()
         .acceptHeader("*/*")
@@ -205,8 +205,8 @@ class QuizParticipationSimulation extends Simulation {
     val usersSubmit: ScenarioBuilder = scenario("Users with submit").exec(login, loadDashboard, startQuiz, workOnQuiz, submitQuiz, waitForResult)
 
     setUp(
-        usersNoSubmit.inject(rampUsers(numUsersNoSubmit) over (20 seconds)),
-        usersSubmit.inject(rampUsers(numUsersSubmit) over (20 seconds))
+        usersNoSubmit.inject(rampUsers(numUsersNoSubmit) during (20 seconds)),
+        usersSubmit.inject(rampUsers(numUsersSubmit) during (20 seconds))
     ).protocols(httpConf)
 
 }
