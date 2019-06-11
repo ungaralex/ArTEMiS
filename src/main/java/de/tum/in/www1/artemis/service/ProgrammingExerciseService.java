@@ -429,24 +429,25 @@ public class ProgrammingExerciseService {
      * the file was updated or generated, false otherwise. This can happen if the contents of the file have not changed.
      *
      * @param solutionRepoURL The URL of the solution repository.
-     * @param exerciseRepoURL The URL of the exercise repository.
+     * @param templateRepoURL The URL of the exercise repository.
      * @param testRepoURL     The URL of the tests repository.
      * @param testsPath       The path to the tests folder, e.g. the path inside the repository where the structure oracle file will be saved in.
      * @return True, if the structure oracle was successfully generated or updated, false if no changes to the file were made.
      * @throws IOException
      * @throws InterruptedException
      */
-    public boolean generateStructureOracleFile(URL solutionRepoURL, URL exerciseRepoURL, URL testRepoURL, String testsPath) throws IOException, InterruptedException {
+    public boolean generateStructureOracleFile(URL solutionRepoURL, URL templateRepoURL, URL testRepoURL, String testsPath) throws IOException, InterruptedException {
         Repository solutionRepository = gitService.getOrCheckoutRepository(solutionRepoURL);
-        Repository exerciseRepository = gitService.getOrCheckoutRepository(exerciseRepoURL);
+        Repository templateRepository = gitService.getOrCheckoutRepository(templateRepoURL);
         Repository testRepository = gitService.getOrCheckoutRepository(testRepoURL);
 
-        gitService.pull(solutionRepository);
-        gitService.pull(exerciseRepository);
-        gitService.pull(testRepository);
+        // Hard reset the repository, otherwise it can fail if e.g. a force push was made to one of the repositories.
+        gitService.pull(solutionRepository, true);
+        gitService.pull(templateRepository, true);
+        gitService.pull(testRepository, true);
 
         Path solutionRepositoryPath = solutionRepository.getLocalPath().toRealPath();
-        Path exerciseRepositoryPath = exerciseRepository.getLocalPath().toRealPath();
+        Path exerciseRepositoryPath = templateRepository.getLocalPath().toRealPath();
         Path structureOraclePath = Paths.get(testRepository.getLocalPath().toRealPath().toString(), testsPath, "test.json");
 
         String structureOracleJSON = OracleGeneratorClient.generateStructureOracleJSON(solutionRepositoryPath, exerciseRepositoryPath);

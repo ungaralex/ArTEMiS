@@ -100,7 +100,7 @@ public class GitService {
         if (cachedRepositories.containsKey(localPath)) {
             // in this case we pull for changes to make sure the Git repo is up to date
             Repository repository = cachedRepositories.get(localPath);
-            pull(repository);
+            pull(repository, false);
             return repository;
         }
 
@@ -156,7 +156,7 @@ public class GitService {
         repository.setLocalPath(localPath);
 
         if (shouldPullChanges) {
-            pull(repository);
+            pull(repository, false);
         }
 
         // Cache the JGit repository object for later use
@@ -236,15 +236,25 @@ public class GitService {
     /**
      * Pulls from remote repository.
      *
-     * @param repo Local Repository Object.
+     * @param repo      Local Repository Object.
+     * @param hardReset if true resets the current branch to its remote version (overrides all unstaged and staged changes!)
      * @return The PullResult which contains FetchResult and MergeResult.
      * @throws GitAPIException
      */
-    public PullResult pull(Repository repo) {
+    public PullResult pull(Repository repo, Boolean hardReset) {
         try {
             Git git = new Git(repo);
             // flush cache of files
             repo.setContent(null);
+            try {
+                if (hardReset) {
+                    git.fetch().setCredentialsProvider(new UsernamePasswordCredentialsProvider(GIT_USER, GIT_PASSWORD)).call();
+                    git.reset().setMode(ResetCommand.ResetType.HARD).setRef(git.getRepository().getRemoteName(git.getRepository().getBranch()));
+                }
+            }
+            catch (IOException ex) {
+                log.error("Could not fetch and reset the repository {} when trying to pull, because of exception {}", repo, ex);
+            }
             return git.pull().setCredentialsProvider(new UsernamePasswordCredentialsProvider(GIT_USER, GIT_PASSWORD)).call();
         }
         catch (GitAPIException ex) {

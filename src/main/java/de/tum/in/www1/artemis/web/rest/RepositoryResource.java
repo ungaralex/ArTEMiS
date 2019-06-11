@@ -294,7 +294,7 @@ public class RepositoryResource {
             return failureResponse;
 
         Repository repository = gitService.get().getOrCheckoutRepository(participation);
-        gitService.get().pull(repository);
+        gitService.get().pull(repository, false);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -343,7 +343,7 @@ public class RepositoryResource {
         status.isClean = gitService.get().isClean(repository);
 
         if (status.isClean) {
-            gitService.get().pull(repository);
+            gitService.get().pull(repository, false);
         }
 
         return new ResponseEntity<>(status, HttpStatus.OK);

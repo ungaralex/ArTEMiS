@@ -408,12 +408,12 @@ public class ProgrammingExerciseResource {
         }
 
         URL solutionRepoURL = programmingExercise.getSolutionRepositoryUrlAsUrl();
-        URL exerciseRepoURL = programmingExercise.getTemplateRepositoryUrlAsUrl();
+        URL templateRepoURL = programmingExercise.getTemplateRepositoryUrlAsUrl();
         URL testRepoURL = programmingExercise.getTestRepositoryUrlAsUrl();
 
         try {
             String testsPath = "test" + File.separator + programmingExercise.getPackageFolderName();
-            boolean didGenerateOracle = programmingExerciseService.generateStructureOracleFile(solutionRepoURL, exerciseRepoURL, testRepoURL, testsPath);
+            boolean didGenerateOracle = programmingExerciseService.generateStructureOracleFile(solutionRepoURL, templateRepoURL, testRepoURL, testsPath);
 
             if (didGenerateOracle) {
                 HttpHeaders responseHeaders = new HttpHeaders();
