@@ -34,6 +34,13 @@ export const enum ParticipationStatus {
     UNINITIALIZED = 'uninitialized',
     INITIALIZED = 'initialized',
     INACTIVE = 'inactive',
+    EXERCISE_UNINITIALIZED = 'exercise-unitialized',
+    EXERCISE_NOT_STARTED = 'exercise-not-started',
+    EXERCISE_ACTIVE = 'exercise-active',
+    EXERCISE_SUBMITTED = 'exercise-submitted',
+    EXERCISE_MISSED = 'exercise-missed',
+    EXERCISE_LATE_NO_FEEDBACK = 'exercise-late-no-feedback',
+    EXERCISE_LATE = 'exercise-late',
 }
 
 export interface ExerciseCategory {
